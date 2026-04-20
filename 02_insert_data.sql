@@ -1,123 +1,154 @@
 -- ============================================================
--- 02_insert_data.sql
--- Carga sintética para proyecto BI - Grupo 9
--- Motor: PostgreSQL
--- Ejecutar DESPUÉS de 01_schema.sql
+-- 02_insert_data.sql CORREGIDO
 -- ============================================================
 
 SET search_path TO hotel_ops;
 SELECT setseed(0.42);
 
 -- ============================================================
+-- 0) LIMPIEZA SEGURA PARA RERUNS
+-- ============================================================
+
+TRUNCATE TABLE
+    detalle_factura,
+    pago,
+    consumo_servicio,
+    bloque_habitacion,
+    calendario_temporada,
+    reserva_huesped,
+    reserva_habitacion,
+    factura,
+    reserva,
+    huesped,
+    habitacion,
+    propiedad,
+    ciudad,
+    pais,
+    tipo_propiedad,
+    tipo_habitacion,
+    canal_reserva,
+    segmento_cliente,
+    motivo_viaje,
+    rango_etario,
+    genero,
+    tipo_documento,
+    metodo_pago,
+    temporada,
+    servicio_complementario,
+    estado_reserva
+RESTART IDENTITY CASCADE;
+
+-- ============================================================
 -- 1) CATÁLOGOS
 -- ============================================================
 
-INSERT INTO pais (nombre_pais, codigo_iso2, codigo_iso3) VALUES
-('Costa Rica','CR','CRI'),
-('Estados Unidos','US','USA'),
-('México','MX','MEX'),
-('España','ES','ESP'),
-('Argentina','AR','ARG'),
-('Colombia','CO','COL'),
-('Panamá','PA','PAN'),
-('Guatemala','GT','GTM'),
-('Canadá','CA','CAN'),
-('Alemania','DE','DEU');
+INSERT INTO pais (id_pais, nombre_pais, codigo_iso2, codigo_iso3) VALUES
+(1,'Costa Rica','CR','CRI'),
+(2,'Estados Unidos','US','USA'),
+(3,'México','MX','MEX'),
+(4,'España','ES','ESP'),
+(5,'Argentina','AR','ARG'),
+(6,'Colombia','CO','COL'),
+(7,'Panamá','PA','PAN'),
+(8,'Guatemala','GT','GTM'),
+(9,'Canadá','CA','CAN'),
+(10,'Alemania','DE','DEU');
 
-INSERT INTO ciudad (id_pais, nombre_ciudad, provincia_estado) VALUES
-(1,'San José','San José'),
-(1,'Liberia','Guanacaste'),
-(1,'Limón','Limón'),
-(1,'Jacó','Puntarenas'),
-(1,'La Fortuna','Alajuela'),
-(1,'Manuel Antonio','Puntarenas'),
-(2,'Miami','Florida'),
-(3,'Ciudad de México','CDMX'),
-(4,'Madrid','Madrid'),
-(5,'Buenos Aires','Buenos Aires'),
-(7,'Ciudad de Panamá','Panamá'),
-(9,'Toronto','Ontario');
+INSERT INTO ciudad (id_ciudad, id_pais, nombre_ciudad, provincia_estado) VALUES
+(1,1,'San José','San José'),
+(2,1,'Liberia','Guanacaste'),
+(3,1,'Limón','Limón'),
+(4,1,'Jacó','Puntarenas'),
+(5,1,'La Fortuna','Alajuela'),
+(6,1,'Manuel Antonio','Puntarenas'),
+(7,2,'Miami','Florida'),
+(8,3,'Ciudad de México','CDMX'),
+(9,4,'Madrid','Madrid'),
+(10,5,'Buenos Aires','Buenos Aires'),
+(11,7,'Ciudad de Panamá','Panamá'),
+(12,9,'Toronto','Ontario');
 
-INSERT INTO tipo_propiedad (nombre_tipo, descripcion) VALUES
-('Resort','Hotel vacacional con alta oferta de amenidades'),
-('Urbano','Hotel orientado a negocios y turismo de ciudad'),
-('Boutique','Hotel pequeño con enfoque premium'),
-('Ecohotel','Hotel con enfoque natural y sostenible');
+INSERT INTO tipo_propiedad (id_tipo_propiedad, nombre_tipo, descripcion) VALUES
+(1,'Resort','Hotel vacacional con alta oferta de amenidades'),
+(2,'Urbano','Hotel orientado a negocios y turismo de ciudad'),
+(3,'Boutique','Hotel pequeño con enfoque premium'),
+(4,'Ecohotel','Hotel con enfoque natural y sostenible');
 
-INSERT INTO tipo_habitacion (nombre_tipo, descripcion, capacidad_minima, capacidad_maxima, tarifa_rack_base) VALUES
-('Sencilla','Habitación individual',1,1,55.00),
-('Doble','Habitación doble',1,2,85.00),
-('Suite','Suite ejecutiva o premium',2,4,145.00),
-('Familiar','Habitación para grupos familiares',3,5,180.00);
+INSERT INTO tipo_habitacion (id_tipo_habitacion, nombre_tipo, descripcion, capacidad_minima, capacidad_maxima, tarifa_rack_base) VALUES
+(1,'Sencilla','Habitación individual',1,1,55.00),
+(2,'Doble','Habitación doble',1,2,85.00),
+(3,'Suite','Suite ejecutiva o premium',2,4,145.00),
+(4,'Familiar','Habitación para grupos familiares',3,5,180.00);
 
-INSERT INTO canal_reserva (nombre_canal, categoria_canal, proveedor, comision_pct) VALUES
-('Booking','OTA','Booking Holdings',17.00),
-('Expedia','OTA','Expedia Group',18.00),
-('Web Directa','DIRECTO_WEB','Sitio Web Propio',0.00),
-('Agencia Mayorista','AGENCIA','Agencia Aliada',12.00),
-('Call Center','CALL_CENTER','Interno',0.00),
-('Walk In','WALK_IN','Mostrador',0.00),
-('Convenio Empresa','CORPORATIVO','Empresas Conveniadas',8.00);
+INSERT INTO canal_reserva (id_canal_reserva, nombre_canal, categoria_canal, proveedor, comision_pct) VALUES
+(1,'Booking','OTA','Booking Holdings',17.00),
+(2,'Expedia','OTA','Expedia Group',18.00),
+(3,'Web Directa','DIRECTO_WEB','Sitio Web Propio',0.00),
+(4,'Agencia Mayorista','AGENCIA','Agencia Aliada',12.00),
+(5,'Call Center','CALL_CENTER','Interno',0.00),
+(6,'Walk In','WALK_IN','Mostrador',0.00),
+(7,'Convenio Empresa','CORPORATIVO','Empresas Conveniadas',8.00);
 
-INSERT INTO segmento_cliente (nombre_segmento, descripcion) VALUES
-('Turista','Cliente de ocio o vacaciones'),
-('Corporativo','Cliente de negocios'),
-('Familiar','Grupo familiar'),
-('Grupo','Reservas grupales o eventos');
+INSERT INTO segmento_cliente (id_segmento_cliente, nombre_segmento, descripcion) VALUES
+(1,'Turista','Cliente de ocio o vacaciones'),
+(2,'Corporativo','Cliente de negocios'),
+(3,'Familiar','Grupo familiar'),
+(4,'Grupo','Reservas grupales o eventos');
 
-INSERT INTO motivo_viaje (nombre_motivo, descripcion) VALUES
-('Vacaciones','Viaje de ocio'),
-('Negocios','Viaje corporativo'),
-('Visita Familiar','Viaje por familia'),
-('Evento','Congreso, boda, reunión o actividad');
+INSERT INTO motivo_viaje (id_motivo_viaje, nombre_motivo, descripcion) VALUES
+(1,'Vacaciones','Viaje de ocio'),
+(2,'Negocios','Viaje corporativo'),
+(3,'Visita Familiar','Viaje por familia'),
+(4,'Evento','Congreso, boda, reunión o actividad');
 
-INSERT INTO rango_etario (nombre_rango, edad_min, edad_max) VALUES
-('18-25',18,25),
-('26-35',26,35),
-('36-45',36,45),
-('46-60',46,60),
-('61+',61,99);
+INSERT INTO rango_etario (id_rango_etario, nombre_rango, edad_min, edad_max) VALUES
+(1,'18-25',18,25),
+(2,'26-35',26,35),
+(3,'36-45',36,45),
+(4,'46-60',46,60),
+(5,'61+',61,99);
 
-INSERT INTO genero (nombre_genero) VALUES
-('Masculino'),
-('Femenino'),
-('No especifica');
+INSERT INTO genero (id_genero, nombre_genero) VALUES
+(1,'Masculino'),
+(2,'Femenino'),
+(3,'No especifica');
 
-INSERT INTO tipo_documento (nombre_tipo) VALUES
-('Cédula'),
-('Pasaporte');
+INSERT INTO tipo_documento (id_tipo_documento, nombre_tipo) VALUES
+(1,'Cédula'),
+(2,'Pasaporte');
 
-INSERT INTO metodo_pago (nombre_metodo, categoria_metodo) VALUES
-('Efectivo','EFECTIVO'),
-('Tarjeta Crédito','TARJETA'),
-('Tarjeta Débito','TARJETA'),
-('Transferencia','TRANSFERENCIA'),
-('Convenio Empresa','CORPORATIVO');
+INSERT INTO metodo_pago (id_metodo_pago, nombre_metodo, categoria_metodo) VALUES
+(1,'Efectivo','EFECTIVO'),
+(2,'Tarjeta Crédito','TARJETA'),
+(3,'Tarjeta Débito','TARJETA'),
+(4,'Transferencia','TRANSFERENCIA'),
+(5,'Convenio Empresa','CORPORATIVO');
 
-INSERT INTO temporada (nombre_temporada, descripcion, prioridad_precio) VALUES
-('Alta','Mayor demanda',3),
-('Media','Demanda intermedia',2),
-('Baja','Menor demanda',1);
+INSERT INTO temporada (id_temporada, nombre_temporada, descripcion, prioridad_precio) VALUES
+(1,'Alta','Mayor demanda',3),
+(2,'Media','Demanda intermedia',2),
+(3,'Baja','Menor demanda',1);
 
-INSERT INTO servicio_complementario (codigo_servicio, nombre_servicio, categoria_servicio, precio_base, requiere_reserva) VALUES
-('SRV001','Restaurante','RESTAURANTE',18.00,FALSE),
-('SRV002','Spa','SPA',55.00,TRUE),
-('SRV003','Tour','TOUR',75.00,TRUE),
-('SRV004','Traslado','TRASLADO',28.00,TRUE),
-('SRV005','Estacionamiento','ESTACIONAMIENTO',10.00,FALSE),
-('SRV006','Lavandería','LAVANDERIA',14.00,FALSE);
+INSERT INTO servicio_complementario (id_servicio, codigo_servicio, nombre_servicio, categoria_servicio, precio_base, requiere_reserva) VALUES
+(1,'SRV001','Restaurante','RESTAURANTE',18.00,FALSE),
+(2,'SRV002','Spa','SPA',55.00,TRUE),
+(3,'SRV003','Tour','TOUR',75.00,TRUE),
+(4,'SRV004','Traslado','TRASLADO',28.00,TRUE),
+(5,'SRV005','Estacionamiento','ESTACIONAMIENTO',10.00,FALSE),
+(6,'SRV006','Lavandería','LAVANDERIA',14.00,FALSE);
 
-INSERT INTO estado_reserva (nombre_estado, descripcion) VALUES
-('Confirmada','Reserva futura aún no ejecutada'),
-('Cancelada','Reserva cancelada antes del check-in'),
-('NoShow','Cliente no se presentó'),
-('Completada','Estadía finalizada');
+INSERT INTO estado_reserva (id_estado_reserva, nombre_estado, descripcion) VALUES
+(1,'Confirmada','Reserva futura aún no ejecutada'),
+(2,'Cancelada','Reserva cancelada antes del check-in'),
+(3,'NoShow','Cliente no se presentó'),
+(4,'Completada','Estadía finalizada');
 
 -- ============================================================
 -- 2) PROPIEDADES
 -- ============================================================
 
 INSERT INTO propiedad (
+    id_propiedad,
     codigo_propiedad,
     nombre_propiedad,
     id_tipo_propiedad,
@@ -129,10 +160,10 @@ INSERT INTO propiedad (
     fecha_apertura,
     total_habitaciones_planificadas
 ) VALUES
-('HTL001','Hotel Central San José',2,4,1,'Paseo Colón, San José','2222-1001','central@hotelbi.com','2017-03-15',40),
-('HTL002','Resort Pacífico Jacó',1,5,4,'Costanera Sur, Jacó','2222-1002','pacifico@hotelbi.com','2018-07-01',40),
-('HTL003','Ecohotel Arenal',4,4,5,'La Fortuna, Alajuela','2222-1003','arenal@hotelbi.com','2019-11-20',40),
-('HTL004','Boutique Manuel Antonio',3,5,6,'Quepos, Puntarenas','2222-1004','boutique@hotelbi.com','2020-02-10',40);
+(1,'HTL001','Hotel Central San José',2,4,1,'Paseo Colón, San José','2222-1001','central@hotelbi.com','2017-03-15',40),
+(2,'HTL002','Resort Pacífico Jacó',1,5,4,'Costanera Sur, Jacó','2222-1002','pacifico@hotelbi.com','2018-07-01',40),
+(3,'HTL003','Ecohotel Arenal',4,4,5,'La Fortuna, Alajuela','2222-1003','arenal@hotelbi.com','2019-11-20',40),
+(4,'HTL004','Boutique Manuel Antonio',3,5,6,'Quepos, Puntarenas','2222-1004','boutique@hotelbi.com','2020-02-10',40);
 
 -- ============================================================
 -- 3) HABITACIONES (160)
@@ -173,7 +204,7 @@ SELECT
         ELSE 180 + (p.id_propiedad * 10)
     END::NUMERIC(12,2) AS tarifa_rack_actual,
     'DISPONIBLE' AS estado_operativo,
-    DATE '2024-01-01' + ((p.id_propiedad * s.n) % 300)
+    DATE '2024-01-01' + (((p.id_propiedad * s.n) % 300)::INT)
 FROM propiedad p
 CROSS JOIN generate_series(1, 40) AS s(n);
 
@@ -213,7 +244,7 @@ SELECT
     CASE WHEN g % 3 = 0 THEN 'P-' ELSE 'C-' END || LPAD(g::TEXT, 8, '0') AS numero_documento,
     'Nombre_' || g AS nombres,
     'Apellido_' || ((g * 13) % 400 + 1) AS apellidos,
-    CURRENT_DATE - make_interval(years => edad::INT),
+    (CURRENT_DATE - make_interval(years => edad::INT))::DATE,
     edad,
     (
         SELECT r.id_rango_etario
@@ -239,7 +270,7 @@ SELECT
     END AS id_motivo_viaje,
     CASE WHEN g % 4 = 0 THEN TRUE ELSE FALSE END AS es_recurrente,
     CASE WHEN g % 4 = 0 THEN (g % 8) + 1 ELSE 0 END AS cantidad_estadias_previas,
-    DATE '2024-01-01' + (g % 400),
+    DATE '2024-01-01' + ((g % 400)::INT),
     TRUE
 FROM base;
 
@@ -253,7 +284,11 @@ INSERT INTO calendario_temporada (
     fecha_inicio,
     fecha_fin
 )
-SELECT p.id_propiedad, t.id_temporada, x.fecha_inicio, x.fecha_fin
+SELECT
+    p.id_propiedad,
+    x.id_temporada,
+    x.fecha_inicio,
+    x.fecha_fin
 FROM propiedad p
 CROSS JOIN (
     VALUES
@@ -267,9 +302,7 @@ CROSS JOIN (
         (1, DATE '2026-07-01', DATE '2026-08-31'),
         (3, DATE '2026-09-01', DATE '2026-11-30'),
         (1, DATE '2026-12-01', DATE '2026-12-31')
-) AS x(id_temporada, fecha_inicio, fecha_fin)
-JOIN temporada t
-    ON t.id_temporada = x.id_temporada;
+) AS x(id_temporada, fecha_inicio, fecha_fin);
 
 -- ============================================================
 -- 6) BLOQUEOS DE HABITACIÓN
@@ -285,8 +318,8 @@ INSERT INTO bloque_habitacion (
 )
 SELECT
     h.id_habitacion,
-    (DATE '2025-01-15' + (g * 18))::TIMESTAMP + INTERVAL '08:00',
-    (DATE '2025-01-15' + (g * 18) + 2)::TIMESTAMP + INTERVAL '17:00',
+    (DATE '2025-01-15' + ((g * 18)::INT))::TIMESTAMP + INTERVAL '08:00',
+    (DATE '2025-01-15' + ((g * 18 + 2)::INT))::TIMESTAMP + INTERVAL '17:00',
     CASE WHEN g % 2 = 0 THEN 'Mantenimiento preventivo' ELSE 'Limpieza profunda' END,
     CASE WHEN g % 2 = 0 THEN 'MANTENIMIENTO' ELSE 'LIMPIEZA_PROFUNDA' END,
     'Bloqueo programado ' || g
@@ -308,13 +341,13 @@ WITH base AS (
         ((g * 7 - 1) % 300) + 1 AS id_huesped_titular,
         ((g - 1) % 7) + 1 AS id_canal_reserva,
         CASE
-            WHEN g % 20 IN (1,2,3) THEN 2  -- Cancelada
-            WHEN g % 20 = 4 THEN 3         -- NoShow
-            WHEN g % 20 IN (5,6) THEN 1    -- Confirmada
-            ELSE 4                         -- Completada
+            WHEN g % 20 IN (1,2,3) THEN 2
+            WHEN g % 20 = 4 THEN 3
+            WHEN g % 20 IN (5,6) THEN 1
+            ELSE 4
         END AS id_estado_reserva,
         ((g - 1) % 5) + 1 AS id_metodo_pago_garantia,
-        (DATE '2025-01-01' + ((g * 2 + (((g - 1) % 4) + 1) * 7) % 620))::DATE AS fecha_checkin_programado,
+        (DATE '2025-01-01' + (((g * 2 + (((g - 1) % 4) + 1) * 7) % 620)::INT))::DATE AS fecha_checkin_programado,
         (1 + (g % 6))::INT AS noches,
         CASE
             WHEN g % 10 IN (0,1,2) THEN 1
@@ -366,17 +399,17 @@ SELECT
     id_canal_reserva,
     id_estado_reserva,
     id_metodo_pago_garantia,
-    (fecha_checkin_programado - ((g % 90) + 1))::TIMESTAMP + INTERVAL '10:00' AS fecha_reserva,
+    (fecha_checkin_programado - (((g % 90) + 1)::INT))::TIMESTAMP + INTERVAL '10:00',
     fecha_checkin_programado,
     fecha_checkin_programado + noches,
     CASE
         WHEN id_estado_reserva = 4 THEN fecha_checkin_programado::TIMESTAMP + INTERVAL '15:00'
         ELSE NULL
-    END AS fecha_checkin_real,
+    END,
     CASE
         WHEN id_estado_reserva = 4 THEN (fecha_checkin_programado + noches)::TIMESTAMP + INTERVAL '11:00'
         ELSE NULL
-    END AS fecha_checkout_real,
+    END,
     adultos,
     ninos,
     infantes,
@@ -389,9 +422,9 @@ SELECT
     END,
     0, 0, 0, 0, 0, 0,
     CASE
-        WHEN id_estado_reserva = 2 THEN (fecha_checkin_programado - ((g % 90) + 1))::TIMESTAMP + INTERVAL '16:00'
+        WHEN id_estado_reserva = 2 THEN (fecha_checkin_programado - (((g % 90) + 1)::INT))::TIMESTAMP + INTERVAL '16:00'
         ELSE NULL
-    END AS fecha_cancelacion,
+    END,
     CASE
         WHEN id_estado_reserva = 2 THEN
             CASE
@@ -400,7 +433,7 @@ SELECT
                 ELSE 'Disponibilidad'
             END
         ELSE NULL
-    END AS motivo_cancelacion,
+    END,
     TRUE
 FROM base;
 
@@ -408,49 +441,30 @@ FROM base;
 -- 8) RESERVA_HUESPED
 -- ============================================================
 
--- titular
-INSERT INTO reserva_huesped (
-    id_reserva,
-    id_huesped,
-    es_titular,
-    es_hospedado
-)
-SELECT
-    r.id_reserva,
-    r.id_huesped_titular,
-    TRUE,
-    TRUE
-FROM reserva r;
+INSERT INTO reserva_huesped (id_reserva, id_huesped, es_titular, es_hospedado)
+SELECT id_reserva, id_huesped_titular, TRUE, TRUE
+FROM reserva;
 
--- acompañante 1
-INSERT INTO reserva_huesped (
-    id_reserva,
-    id_huesped,
-    es_titular,
-    es_hospedado
-)
+INSERT INTO reserva_huesped (id_reserva, id_huesped, es_titular, es_hospedado)
 SELECT
     r.id_reserva,
     ((r.id_huesped_titular + 37 - 1) % 300) + 1,
     FALSE,
     TRUE
 FROM reserva r
-WHERE (r.adultos + r.ninos + r.infantes) >= 2;
+WHERE (r.adultos + r.ninos + r.infantes) >= 2
+  AND ((r.id_huesped_titular + 37 - 1) % 300) + 1 <> r.id_huesped_titular;
 
--- acompañante 2
-INSERT INTO reserva_huesped (
-    id_reserva,
-    id_huesped,
-    es_titular,
-    es_hospedado
-)
+INSERT INTO reserva_huesped (id_reserva, id_huesped, es_titular, es_hospedado)
 SELECT
     r.id_reserva,
     ((r.id_huesped_titular + 121 - 1) % 300) + 1,
     FALSE,
     TRUE
 FROM reserva r
-WHERE (r.adultos + r.ninos + r.infantes) >= 3;
+WHERE (r.adultos + r.ninos + r.infantes) >= 3
+  AND ((r.id_huesped_titular + 121 - 1) % 300) + 1 <> r.id_huesped_titular
+  AND ((r.id_huesped_titular + 121 - 1) % 300) + 1 <> (((r.id_huesped_titular + 37 - 1) % 300) + 1);
 
 -- ============================================================
 -- 9) RESERVA_HABITACION
@@ -491,16 +505,16 @@ SELECT
     rm.id_habitacion,
     rm.tarifa_rack_actual,
     r.descuento_pct,
-    ROUND(rm.tarifa_rack_actual * (1 - r.descuento_pct / 100.0), 2) AS tarifa_noche_neta,
+    ROUND(rm.tarifa_rack_actual * (1 - r.descuento_pct / 100.0), 2),
     r.estadia_noches_programadas,
-    ROUND(rm.tarifa_rack_actual * r.estadia_noches_programadas, 2) AS subtotal_bruto,
-    ROUND((rm.tarifa_rack_actual * r.estadia_noches_programadas) * (r.descuento_pct / 100.0), 2) AS subtotal_descuento,
-    ROUND((rm.tarifa_rack_actual * r.estadia_noches_programadas) * (1 - r.descuento_pct / 100.0), 2) AS subtotal_neto,
+    ROUND(rm.tarifa_rack_actual * r.estadia_noches_programadas, 2),
+    ROUND((rm.tarifa_rack_actual * r.estadia_noches_programadas) * (r.descuento_pct / 100.0), 2),
+    ROUND((rm.tarifa_rack_actual * r.estadia_noches_programadas) * (1 - r.descuento_pct / 100.0), 2),
     1
 FROM res_by_property r
 JOIN rooms rm
   ON rm.id_propiedad = r.id_propiedad
- AND rm.rn = ((r.rn_res - 1) % rm.total_rooms) + 1;
+ AND rm.rn = (((r.rn_res - 1) % rm.total_rooms) + 1);
 
 -- ============================================================
 -- 10) ACTUALIZAR MONTOS DE RESERVA A PARTIR DEL HOSPEDAJE
@@ -546,59 +560,60 @@ INSERT INTO consumo_servicio (
 SELECT
     r.id_reserva,
     r.id_huesped_titular,
-    ((r.id_reserva + gs.n - 1) % 6) + 1 AS id_servicio,
-    COALESCE(r.fecha_checkin_real, r.fecha_checkin_programado::TIMESTAMP + INTERVAL '15 hours') + (gs.n * INTERVAL '5 hours') AS fecha_consumo,
-    ((r.id_reserva + gs.n) % 3 + 1)::NUMERIC(12,2) AS cantidad,
-    sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3) AS precio_unitario,
+    ((r.id_reserva + gs.n - 1) % 6) + 1,
+    COALESCE(r.fecha_checkin_real, r.fecha_checkin_programado::TIMESTAMP + INTERVAL '15 hours') + (gs.n * INTERVAL '5 hours'),
+    ((r.id_reserva + gs.n) % 3 + 1)::NUMERIC(12,2),
+    sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3),
     ROUND(
         CASE
-            WHEN (r.id_reserva + gs.n) % 7 = 0 THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
+            WHEN (r.id_reserva + gs.n) % 7 = 0
+                THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
             ELSE 0
         END
-    , 2) AS descuento_monto,
+    , 2),
     ROUND(
         (
             ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1)))
             -
             CASE
-                WHEN (r.id_reserva + gs.n) % 7 = 0 THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
+                WHEN (r.id_reserva + gs.n) % 7 = 0
+                    THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
                 ELSE 0
             END
         ) * 0.13
-    , 2) AS impuesto_monto,
+    , 2),
     ROUND(
         (
             ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1)))
             -
             CASE
-                WHEN (r.id_reserva + gs.n) % 7 = 0 THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
+                WHEN (r.id_reserva + gs.n) % 7 = 0
+                    THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
                 ELSE 0
             END
         )
-    , 2) AS subtotal,
+    , 2),
     ROUND(
         (
             (
                 ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1)))
                 -
                 CASE
-                    WHEN (r.id_reserva + gs.n) % 7 = 0 THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
+                    WHEN (r.id_reserva + gs.n) % 7 = 0
+                        THEN ((sc.precio_base + (((r.id_reserva + gs.n) % 4) * 3)) * (((r.id_reserva + gs.n) % 3 + 1))) * 0.10
                     ELSE 0
                 END
             ) * 1.13
         )
-    , 2) AS total,
-    CASE
-        WHEN r.id_estado_reserva = 4 THEN 'FACTURADO'
-        ELSE 'REGISTRADO'
-    END AS estado_consumo,
+    , 2),
+    CASE WHEN r.id_estado_reserva = 4 THEN 'FACTURADO' ELSE 'REGISTRADO' END,
     'Consumo automático'
 FROM reserva r
 JOIN LATERAL generate_series(
     1,
     CASE
-        WHEN r.id_estado_reserva = 4 THEN 1 + (r.id_reserva % 3)   -- 1 a 3 consumos si completada
-        WHEN r.id_estado_reserva = 1 THEN 1                        -- 1 consumo si confirmada
+        WHEN r.id_estado_reserva = 4 THEN 1 + (r.id_reserva % 3)
+        WHEN r.id_estado_reserva = 1 THEN 1
         ELSE 0
     END
 ) AS gs(n) ON TRUE
@@ -754,7 +769,6 @@ JOIN servicio_complementario s
 -- 16) PAGOS
 -- ============================================================
 
--- pagos completos para facturas pagadas
 INSERT INTO pago (
     id_factura,
     id_metodo_pago,
@@ -766,7 +780,7 @@ INSERT INTO pago (
 )
 SELECT
     f.id_factura,
-    ((f.id_factura - 1) % 5) + 1 AS id_metodo_pago,
+    ((f.id_factura - 1) % 5) + 1,
     f.fecha_emision + INTERVAL '1 day',
     f.total,
     'USD',
@@ -775,7 +789,6 @@ SELECT
 FROM factura f
 WHERE f.estado_factura = 'PAGADA';
 
--- pagos parciales pendientes para facturas emitidas
 INSERT INTO pago (
     id_factura,
     id_metodo_pago,
@@ -787,7 +800,7 @@ INSERT INTO pago (
 )
 SELECT
     f.id_factura,
-    ((f.id_factura + 1 - 1) % 5) + 1 AS id_metodo_pago,
+    ((f.id_factura) % 5) + 1,
     f.fecha_emision + INTERVAL '2 day',
     ROUND(f.total * 0.40, 2),
     'USD',
@@ -797,9 +810,31 @@ FROM factura f
 WHERE f.estado_factura = 'EMITIDA';
 
 -- ============================================================
--- 17) QUERIES RÁPIDAS DE VERIFICACIÓN
+-- 17) SINCRONIZAR SECUENCIAS
 -- ============================================================
 
+SELECT setval(pg_get_serial_sequence('pais', 'id_pais'), COALESCE((SELECT MAX(id_pais) FROM pais), 1), true);
+SELECT setval(pg_get_serial_sequence('ciudad', 'id_ciudad'), COALESCE((SELECT MAX(id_ciudad) FROM ciudad), 1), true);
+SELECT setval(pg_get_serial_sequence('tipo_propiedad', 'id_tipo_propiedad'), COALESCE((SELECT MAX(id_tipo_propiedad) FROM tipo_propiedad), 1), true);
+SELECT setval(pg_get_serial_sequence('tipo_habitacion', 'id_tipo_habitacion'), COALESCE((SELECT MAX(id_tipo_habitacion) FROM tipo_habitacion), 1), true);
+SELECT setval(pg_get_serial_sequence('canal_reserva', 'id_canal_reserva'), COALESCE((SELECT MAX(id_canal_reserva) FROM canal_reserva), 1), true);
+SELECT setval(pg_get_serial_sequence('segmento_cliente', 'id_segmento_cliente'), COALESCE((SELECT MAX(id_segmento_cliente) FROM segmento_cliente), 1), true);
+SELECT setval(pg_get_serial_sequence('motivo_viaje', 'id_motivo_viaje'), COALESCE((SELECT MAX(id_motivo_viaje) FROM motivo_viaje), 1), true);
+SELECT setval(pg_get_serial_sequence('rango_etario', 'id_rango_etario'), COALESCE((SELECT MAX(id_rango_etario) FROM rango_etario), 1), true);
+SELECT setval(pg_get_serial_sequence('genero', 'id_genero'), COALESCE((SELECT MAX(id_genero) FROM genero), 1), true);
+SELECT setval(pg_get_serial_sequence('tipo_documento', 'id_tipo_documento'), COALESCE((SELECT MAX(id_tipo_documento) FROM tipo_documento), 1), true);
+SELECT setval(pg_get_serial_sequence('metodo_pago', 'id_metodo_pago'), COALESCE((SELECT MAX(id_metodo_pago) FROM metodo_pago), 1), true);
+SELECT setval(pg_get_serial_sequence('temporada', 'id_temporada'), COALESCE((SELECT MAX(id_temporada) FROM temporada), 1), true);
+SELECT setval(pg_get_serial_sequence('servicio_complementario', 'id_servicio'), COALESCE((SELECT MAX(id_servicio) FROM servicio_complementario), 1), true);
+SELECT setval(pg_get_serial_sequence('estado_reserva', 'id_estado_reserva'), COALESCE((SELECT MAX(id_estado_reserva) FROM estado_reserva), 1), true);
+SELECT setval(pg_get_serial_sequence('propiedad', 'id_propiedad'), COALESCE((SELECT MAX(id_propiedad) FROM propiedad), 1), true);
+
+-- ============================================================
+-- 18) VERIFICACIÓN
+-- ============================================================
+
+-- SELECT COUNT(*) AS paises FROM pais;
+-- SELECT COUNT(*) AS ciudades FROM ciudad;
 -- SELECT COUNT(*) AS propiedades FROM propiedad;
 -- SELECT COUNT(*) AS habitaciones FROM habitacion;
 -- SELECT COUNT(*) AS huespedes FROM huesped;
