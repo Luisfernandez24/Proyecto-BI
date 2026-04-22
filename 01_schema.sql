@@ -7,7 +7,7 @@ CREATE SCHEMA hotel_ops;
 SET search_path TO hotel_ops;
 
 -- ============================================================
--- 1) CATÁLOGOS / MAESTROS
+-- 1) Tablas de referencia
 -- ============================================================
 
 CREATE TABLE pais (
