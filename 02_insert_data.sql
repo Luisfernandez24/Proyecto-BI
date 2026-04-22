@@ -1,12 +1,12 @@
 -- ============================================================
--- 02_insert_data.sql CORREGIDO
+-- 02_insert_data.sql 
 -- ============================================================
 
 SET search_path TO hotel_ops;
 SELECT setseed(0.42);
 
 -- ============================================================
--- 0) LIMPIEZA SEGURA PARA RERUNS
+-- 0) LIMPIEZA SEGURA 
 -- ============================================================
 
 TRUNCATE TABLE
@@ -844,3 +844,25 @@ SELECT setval(pg_get_serial_sequence('propiedad', 'id_propiedad'), COALESCE((SEL
 -- SELECT COUNT(*) AS consumos_servicio FROM consumo_servicio;
 -- SELECT COUNT(*) AS facturas FROM factura;
 -- SELECT COUNT(*) AS pagos FROM pago;
+
+
+UPDATE hotel_ops.huesped
+SET nombres = nombres_reales.nombre,
+    apellidos = nombres_reales.apellido
+FROM (
+    SELECT id_huesped,
+           (ARRAY[
+               'Carlos','Ana','Luis','Maria','Jose','Laura','Andres','Sofia','Daniel','Valeria',
+               'Jorge','Camila','Fernando','Gabriela','Diego','Paula','Ricardo','Elena','Miguel','Lucia'
+           ])[((id_huesped % 20) + 1)] AS nombre,
+
+           (ARRAY[
+               'Rodriguez','Gomez','Fernandez','Lopez','Martinez','Hernandez','Perez','Ramirez','Sanchez','Torres',
+               'Flores','Rivera','Morales','Ortiz','Castro','Vargas','Rojas','Navarro','Mendoza','Silva'
+           ])[((id_huesped % 20) + 1)] AS apellido
+
+    FROM hotel_ops.huesped
+) AS nombres_reales
+WHERE hotel_ops.huesped.id_huesped = nombres_reales.id_huesped;
+UPDATE hotel_ops.huesped
+SET email = LOWER(nombres || '.' || apellidos || '@mail.com');
